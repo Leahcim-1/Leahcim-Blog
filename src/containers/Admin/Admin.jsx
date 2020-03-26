@@ -39,7 +39,7 @@ class Admin extends Component {
       };
 
     render() {
-        console.log(this.state.routesNode)
+
         return (
             <Layout className="admin">
                 <Sider

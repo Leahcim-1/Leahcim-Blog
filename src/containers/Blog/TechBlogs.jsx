@@ -8,25 +8,23 @@ class TechBlogs extends Component {
         initLoading: true,
         loading: false,
         page: 1,
-        numOfPages: 5,
+        numOfPages: 6,
         blogs: [],
     }  
 
+    getBlogs = async ( ) => {
+        let res = await getBlog({
+            isPublish: true
+        });
+        this.setState({
+            page: this.state.page + 1,
+            blogs: res.blogs,
+            initLoading: false
+        })
+    } 
     
     componentDidMount() {
-        const getBlogs = async ( ) => {
-            let res = await getBlog({
-                isPublish: true
-            });
-
-            console.log(res)
-            this.setState({
-                page: this.state.page + 1,
-                blogs: res.blogs,
-                initLoading: false
-            })
-        } 
-        getBlogs()
+        this.getBlogs()
     }
 
     render() {
@@ -34,8 +32,6 @@ class TechBlogs extends Component {
             <BlogsList 
                 blogs={this.state.blogs}
                 page={this.state.page}
-                numOfPages={5}
-                initLoading={this.state.initLoading}
                 history={this.props.history}
             />
         );

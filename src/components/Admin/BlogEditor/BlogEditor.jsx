@@ -17,7 +17,7 @@ class BlogEditor extends Component {
     }
 
     static defaultProps = {
-        blog: {
+        emptyBlog: {
             id: "",
             title: "",
             author: "",
@@ -35,17 +35,14 @@ class BlogEditor extends Component {
     }
 
     clickHandle = (e) => {
-        let pathname = "";
         if (e.target.innerText === "Publish") {
             this.setState({ publishLoading: true });
             this.blog.isPublish = true;
             this.blog.isDraft = false;
-            pathname = '/blogs_list';
         }
         else {
             this.setState({ draftLoading: true });
             this.blog.isDraft = true;
-            pathname = '/draft_box';
         }
         this.blog.createdTime ? this.blog.createdTime = this.blog.createdTime : this.blog.createdTime = Date.now();
         this.blog.lastEditedTime = Date.now();
@@ -80,12 +77,11 @@ class BlogEditor extends Component {
     }
 
     render() {
-    const catagory = this.props.catagory.map(el => (<Option key={el.value}>{el.value}</Option>))
+        const catagory = this.props.catagory.map(el => (<Option key={el.value}>{el.value}</Option>))
         return (
             <div style={{ padding: "10px", height: "100%" }}>
-
                 <Input.Group
-                    size="small"
+                    size="default"
                     style={{ marginBottom: "20px" }}
 
                 >
@@ -100,7 +96,7 @@ class BlogEditor extends Component {
                 </Input.Group>
 
                 <Input.Group
-                    size="small"
+                    size="default"
                     style={{ marginBottom: "20px" }}>
                     <div className="author-div">
                         <h4>Author</h4>
@@ -207,7 +203,7 @@ class BlogEditor extends Component {
     }
 
     componentDidMount() {
-        this.blog = this.props.blog;
+        this.blog = this.props.emptyBlog;
     }
 
     componentDidUpdate( ) { 

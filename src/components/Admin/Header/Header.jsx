@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
 
-
 class Header extends Component {
-
-
+    state = {  }
     render() {
-        console.log()
         return (
-            <div className="header-content">
-                <Header />
-            </div>
+            <div />
         );
     }
 }

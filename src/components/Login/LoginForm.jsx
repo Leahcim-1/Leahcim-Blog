@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
 import { loginReq } from '../../api/user';
 import './loginForm.less'
-import { WindowsFilled } from '@ant-design/icons';
+
 
 
 class LoginForm extends Component {

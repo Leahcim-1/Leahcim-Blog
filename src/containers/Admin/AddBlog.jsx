@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import BlogEditor from '../../components/Admin/BlogEditor/BlogEditor';
 import { addBlog, initBlog, uploadCover } from '../../api/blog';
 
-import { message } from 'antd';
+import { message, Spin } from 'antd';
 
 class AddBlog extends Component {
 
@@ -13,62 +13,63 @@ class AddBlog extends Component {
             id: "",
             coverPicPath: "",
             catagory: [],
-            history: { ...history }
+            history: { ...history },
+            loading: <Spin size='large' />
         }
     }
 
 
-    submitServer = (blog) => {
-
-        const postBlog = async () => {
-            let res = await addBlog(blog);
-            console.log(res);
-            if (res.code === 0) {
-                const mes = res.message;
-                const path = blog.isDraft ? "draft_box" : "blogs_list";
-                message.success(mes);
-                this.state.history.replace(path);
-            }
+    submitServer = async (blog) => {
+        let res = await addBlog(blog);
+        console.log(res);
+        if (res.code === 0) {
+            const mes = res.message;
+            const path = blog.isDraft ? "draft_box" : "blogs_list";
+            message.success(mes);
+            this.state.history.replace(path);
         }
-        postBlog()
     }
 
     getBlogID = async () => {
         let res = await initBlog();
-        console.log(res)
         this.setState({
             id: res.id,
-            catagory: [...res.catagory]
+            catagory: [...res.catagory],
+            loading: false
         });
-    }   
+    }
 
-uploadCoverHandle = (img, id) => {
-    const upload = async () => {
+    uploadCoverHandle = async (img, id) => {
         let res = await uploadCover(img, id);
         this.setState({
             coverPicPath: res.data.coverPicPath
         })
     }
-    upload();
-}
 
 
-render() {
-    return (
-        <BlogEditor
-            submitServer={this.submitServer}
-            id={this.state.id}
-            uploadCoverHandle={this.uploadCoverHandle}
-            coverPicPath={this.state.coverPicPath}
-            catagory={this.state.catagory}
+    render() {
+        return (
+            this.state.loading ?
+                (<Spin 
+                    size='large' 
+                    style={{display: 'block', margin: '0 auto'}}
+                />)
+                :
+                (
+                    <BlogEditor
+                        submitServer={this.submitServer}
+                        id={this.state.id}
+                        uploadCoverHandle={this.uploadCoverHandle}
+                        coverPicPath={this.state.coverPicPath}
+                        catagory={this.state.catagory}
+                    />
+                )
+        );
+    }
 
-        />
-    );
-}
-
-componentDidMount() {
-    this.getBlogID();
-}
+    componentDidMount() {
+        this.getBlogID();
+    }
 
 
 }

@@ -8,6 +8,8 @@ class BlogListItem extends Component {
         page: 1
     }
 
+
+
     componentDidMount() {
         this.url = "http://localhost:20000"
     }
@@ -70,7 +72,10 @@ class BlogListItem extends Component {
                                         hash: item._id
                                     }}>Edit</Link>
                                 </Button>
-                                <Button size="small">Delete</Button>
+                                <Button size="small" style={{ marginRight: "8px" }} onClick={()=>{this.props.deleteBlog(item._id)}}>Delete</Button>
+                                {item.isPublish ? 
+                                    (<Button size="small" type='danger' onClick={() => this.props.updateBlog(item._id)}>Withdrawn</Button>) 
+                                    : (<Button type='primary' size="small" onClick={() => this.props.updateBlog(item._id)}>Publish</Button>)}
                             </div>
 
                             <div className="list-time">

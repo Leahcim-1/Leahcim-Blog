@@ -35,18 +35,23 @@ export const getBlog = ( condition ) => {
 }
 
 
-export const editBlog = ( blog) => {
+export const editBlog = ( id, docs ) => {
     return request({
         url: '/api/edit_blog',
         method: "PUT",
-        data: blog
+        data: {
+            id: id,
+            docs: docs
+        }
     });
 }
 
-export const deleteBlog = ( condition) => {
+export const deleteBlog = (id) => {
     return request({
         url: '/api/delete_blog',
         method: "DELETE",
-        data: condition,
+        data: {
+            id: id
+        },
     });
 }

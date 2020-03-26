@@ -1,71 +1,53 @@
 import React, { Component, lazy, Suspense } from 'react';
-import { message } from 'antd'
+import { message, Divider } from 'antd'
 import { userAuth } from '../api/user';
 import { Route, Redirect } from 'react-router-dom';
 
 
-class RouteInterceptor extends Component {
-    _isMounted = false;
+const RouteInterceptor = ({...props}) => { 
+   return class extends Component {
+       state = { 
+           isLoading: true,
+           isAuth: false
+        }
 
-    state = {
-        vaild: false
-    }
+       authReq = async() => {
 
-
-
-
-    authReq = async () => {
-        const token = localStorage.getItem('token');
-        const res = await userAuth(token);
-        if (this._isMounted) {
+           const token = localStorage.getItem('token');
+            let res = await userAuth(token);
+            console.log(res)
             if (res.data.code === 0) {
-                this.setState({ vaild: true })
+                this.setState({
+                    isLoading: false,
+                    isAuth: true
+                })
             }
-            else {
-                message.error('You haven\'t Sign In Yet')
-                this.setState({ vaild: false })
-            }
-        }
-    }
-  
+       }
 
+       componentDidMount(){
+           debugger
+            this.authReq()
+       }
 
-    componentDidMount() {
-        this._isMounted = true;
-        this.authReq();
-    }
-
-    componentWillUnmount() {
-        console.log('mount: ', this._isMounted)
-        this._isMounted = false;
-    }
-
-    render() {
-        const LazyComponent = lazy(() => import(`../${this.props.component}`))  
-        const vaild = this.state.vaild;
-        console.log(vaild)
-        console.log('mount: ', this._isMounted)
-
-        if (this._isMounted) {
-            console.log('mount: ', this._isMounted)
-            return (
-                <Route
-                    path={this.props.path}
-                    render={props =>
-                        (vaild) ? (
-                            <Suspense fallback={<div>Loading...</div>}>
-                                <LazyComponent {...props} />
-                            </Suspense>) 
-                             : (<Redirect to={{ pathname: '/login' }} />)
-                    }
+       render() {
+           let node = undefined;
+           if (this.state.isLoading) 
+                node = (<div>isLoading</div>)
+           else {
+               if (this.state.isAuth) {
+                   node = <Route {...props}/>
+               }
+               else {
+                   node = <Redirect to='/login' />
+               }
+           }
+           return (
+               {node}
+           );
+       }
+   }
     
-                />
-            );
-        }
-        
-        return <div> </div>
-    }
-
 }
+
 
 export default RouteInterceptor;

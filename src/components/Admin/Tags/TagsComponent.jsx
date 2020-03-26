@@ -108,28 +108,7 @@ class TagsComponent extends Component {
                 )}
 
                 {
-                    (tags.length !== 0) ? (
-                        tags.map((tag, index) => {
-                            const isLongTag = tag.value.length > 15;
-                            const tagElem = (
-                                <Tag 
-                                    key={tag.value} 
-                                    closable="true" 
-                                    color={tag.color} 
-                                    onClose={() => this.tagCloseHandler(tag)}
-                                >
-                                    {isLongTag ? `${tag.value.slice(0, 15)}...` : tag.value}
-                                </Tag>
-                            );
-                            return isLongTag ? (
-                                <Tooltip title={tag.value} key={tag.value}>
-                                    {tagElem}
-                                </Tooltip>
-                            ) : (
-                                    tagElem
-                                );
-                        })
-                    ) : console.log()
+                    this.props.showTags()
                 }
 
 
@@ -152,6 +131,16 @@ class TagsComponent extends Component {
         this.props.getTags(this.state.tags);
     }
 }
+
+const TagsDecorator = (TagsComponent) => {
+    return (
+        <TagsComponent 
+            showTags={showTags}
+        />
+    )
+}   
+
+TagsComponent = TagsDecorator;
 
 export default TagsComponent;
 

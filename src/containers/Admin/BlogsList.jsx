@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import BlogListItem from '../../components/Admin/BlogListItem/BlogListItem';
-import { getBlog } from '../../api/blog';
-import { message } from 'antd';
+import { getBlog, editBlog, deleteBlog } from '../../api/blog';
+import { message, Modal } from 'antd';
+
+const { confirm } = Modal;
 
 class BlogsList extends Component {
 
@@ -12,22 +14,41 @@ class BlogsList extends Component {
         this.state = {
             blogs: [],
             url: url,
-            history: {...history}
+            history: { ...history }
         }
     }
 
-    getBlogsData() {
+    getBlogsData = async () => {
         const condition = { isDraft: false };
-        const loadBlogs = async () => {
-            let res = await getBlog(condition);
-            console.log(res)
-            this.setState({
-                blogs: [...res.blogs]
-            })
-            
+        let res = await getBlog(condition);
+        this.setState({
+            blogs: [...res.blogs]
+        })
+    }
+
+    updateBlog = async (id) => {
+        let blog = this.state.blogs.find(blog => blog._id === id)
+        const docs = {isPublish: !blog.isPublish};
+        const res = await editBlog(id, docs);
+        if (res.code === 0) {
+            this.getBlogsData()
         }
-        loadBlogs()
-        
+    }
+
+    deleteBlog = (id) => {
+        confirm({
+            title: 'Be Careful',
+            content: "Are you sure you want to delete this blog?",
+            cancelText: 'No',
+            okText: "Sure",
+            okType: 'danger',
+            onOk: async()=> {
+                const res = await deleteBlog(id);
+                if (res.code === 0) {
+                    this.getBlogsData()
+                }
+            }
+        })
     }
 
     componentDidMount() {
@@ -35,9 +56,10 @@ class BlogsList extends Component {
     }
 
     render() {
+        console.log(this.state.blogs)
         return (
             <div>
-                <BlogListItem blogs={this.state.blogs}/>            
+                <BlogListItem blogs={this.state.blogs} updateBlog={this.updateBlog} deleteBlog={this.deleteBlog}/>
             </div>
         );
     }
